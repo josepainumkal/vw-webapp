@@ -1,0 +1,180 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<metadata>
+   <idinfo>
+      <citation>
+         <citeinfo>
+            <origin>$firstnamepi $lastnamepi</origin>
+            <pubdate>20170501</pubdate>
+            <title>$description</title>
+            <geoform>$geoform</geoform>
+            <onlink>http://virtualwatershed.org</onlink>
+         </citeinfo>
+      </citation>
+      <descript>
+         <abstract>$abstract 
+         </abstract>
+         <purpose>$purpose
+         </purpose>
+         <supplinf>These data are made available through New Mexico's EPSCoR program.</supplinf>
+      </descript>
+      <timeperd>
+         <timeinfo>
+            <sngdate>
+               <caldate>Unknown</caldate>
+            </sngdate>
+         </timeinfo>
+         <current>Publication date</current>
+      </timeperd>
+      <status>
+         <progress>Complete</progress>
+         <update>Unknown</update>
+      </status>
+      <spdom>
+         <bounding>
+            <westbc>-106.375</westbc> 
+            <eastbc>-106.3125</eastbc> 
+            <northbc>36.1875</northbc> 
+            <southbc>36.125</southbc>
+         </bounding>
+      </spdom>
+      <keywords>
+         <theme>
+            <themekt>$firstnamepi $lastnamepi</themekt>
+            <themekey>$theme</themekey>
+         </theme>
+         <theme>
+            <themekt>ISO 19115 Topic Category</themekt>
+            <themekey>utilitiesCommunications</themekey>
+         </theme>
+         <theme>
+            <themekt>Project</themekt>
+            <themekey>EPSCoR</themekey>
+            <themekey>$subtheme</themekey>
+            <themekey>$theme</themekey>
+         </theme>
+         <place>
+            <placekt>GNIS</placekt>
+         </place>
+      </keywords>
+      <accconst>None</accconst>
+      <useconst>None</useconst>
+      <ptcontac>
+         <cntinfo>
+            <cntorgp>
+               <cntorg>$groupname</cntorg>
+               <cntper>$firstnamepi $lastnamepi</cntper>
+            </cntorgp>
+            <cntaddr>
+               <addrtype>mailing address</addrtype>
+               <address>$address1</address>
+               <address>$address2</address>
+               <address>$address3</address>
+               <city>$city</city>
+               <state>$state</state>
+               <postal>$zip</postal>
+               <country>USA</country>
+            </cntaddr>
+            <cntvoice>$phonepi</cntvoice>
+            <cntemail>$emailpi</cntemail>
+         </cntinfo>
+      </ptcontac>
+      <datacred>$firstnamepi $lastnamepi</datacred>
+      <native>Unknown</native>
+   </idinfo>
+   <dataqual>
+      <logic>Not provided</logic>
+      <complete>Not provided</complete>
+      <lineage>
+         <procstep>
+            <procdesc>Unknown</procdesc>
+            <procdate>Unknown</procdate>
+         </procstep>
+      </lineage>
+   </dataqual>
+   <spdoinfo>
+      <indspref>United States</indspref>
+   </spdoinfo>
+   <eainfo>
+      <detailed>
+         <enttyp>
+            <enttypl>$collectionName</enttypl>
+            <enttypd>$description - No data value is -9999</enttypd>
+            <enttypds>$firstnamepi $lastnamepi</enttypds>
+         </enttyp>
+      </detailed>
+   </eainfo>
+   <distinfo>
+      <distrib>
+         <cntinfo>
+            <cntorgp>
+               <cntorg>Earth Data Analysis Center</cntorg>
+            </cntorgp>
+            <cntpos>Clearinghouse Manager</cntpos>
+            <cntaddr>
+               <addrtype>mailing and physical address</addrtype>
+               <address>MSC01 1110</address>
+               <address>1 University of New Mexico</address>
+               <city>Albuquerque</city>
+               <state>NM</state>
+               <postal>87131-0001</postal>
+               <country>USA</country>
+            </cntaddr>
+            <cntvoice>505-277-3622 ext. 230</cntvoice>
+            <cntfax>505-277-3614</cntfax>
+            <cntemail>clearinghouse@edac.unm.edu</cntemail>
+            <hours>0800 - 1700 MT, M-F -7 hours GMT</hours>
+         </cntinfo>
+      </distrib>
+      <resdesc>Downloadable Data</resdesc>
+      <distliab>The material on this site is made available as a public service.</distliab>
+      <stdorder>
+         <digform>
+            <digtinfo>
+               <formname>Spreadsheet</formname>
+               <transize>1</transize>
+            </digtinfo>
+            <digtopt>
+               <onlinopt>
+                  <computer>
+                     <networka>
+                        <networkr>http://nmepscor.org</networkr>
+                     </networka>
+                  </computer>
+                  <accinstr>Download from New Mexico EPSCoR</accinstr>
+               </onlinopt>
+            </digtopt>
+         </digform>
+         <fees>None. The files are available to download from New Mexico EPSCoR (NM EPSCoR)</fees>
+         <ordering>Contact Earth Data Analysis Center at fixit@edac.unm.edu</ordering>
+      </stdorder>
+      <custom>Contact Earth Data Analysis Center at fixit@edac.unm.edu</custom>
+      <techpreq>Adequate computer capability is the only technical prerequisite for viewing data in digital form.</techpreq>
+   </distinfo>
+   <metainfo>
+      <metd>20170501</metd>
+      <metc>
+         <cntinfo>
+            <cntorgp>
+               <cntorg>Earth Data Analysis Center</cntorg>
+            </cntorgp>
+            <cntpos>CI</cntpos>
+            <cntaddr>
+               <addrtype>mailing and physical address</addrtype>
+               <address>MSC01 1110</address>
+               <address>1 University of New Mexico</address>
+               <city>Albuquerque</city>
+               <state>NM</state>
+               <postal>87131-0001</postal>
+               <country>USA</country>
+            </cntaddr>
+            <cntvoice>505-277-3622 ext. 230</cntvoice>
+            <cntfax>505-277-3614</cntfax>
+            <cntemail>clearinghouse@edac.unm.edu</cntemail>
+            <hours>0800 - 1700 MT, M-F -7 hours GMT</hours>
+         </cntinfo>
+      </metc>
+      <metstdn>FGDC Content Standards for Digital Geospatial Metadata</metstdn>
+      <metstdv>FGDC-STD-001-1998</metstdv>
+      <mettc>local time</mettc>
+   </metainfo>
+</metadata>

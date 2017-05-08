@@ -4,6 +4,7 @@ var ModelRun = React.createClass({
   getInitialState: function() {
 
     var runButton;
+   
     if (this.props.data.progress_state=='NOT_STARTED') {
       runButton = <ReactBootstrap.Button
                             onClick={this.onRunClick}
@@ -22,13 +23,34 @@ var ModelRun = React.createClass({
 
     }
 
+
     return {
       id: this.props.data.id,
       isRunning:false,
       progressBars: null,
       progressButton: runButton,
-      resources: this.props.data.resources
+      resources: this.props.data.resources,
+      gstorePushFiles: [],
+      gstore_Pushed: this.props.data.gstore_Pushed,
+      gpush_btn_text: 'Gstore-PUSH',
+      gstore_id: this.props.data.gstore_id
+
     };
+  },
+  addFileToGstore: function(file){
+    this.setState({
+        gstorePushFiles: this.state.gstorePushFiles.concat([file])
+    });
+    console.log(file);
+    console.log(this.state.gstorePushFiles);
+  },
+  deleteFileFromGstore: function(file){
+    var gstorePushFiles = this.state.gstorePushFiles.filter(function(delfile){
+      return file !== delfile;
+    });
+
+    this.setState({ gstorePushFiles: gstorePushFiles });
+    console.log(this.state.gstorePushFiles);
   },
   getButtonClass: function(state){
     return modelrunApi.states_vars[state];
@@ -111,6 +133,8 @@ var ModelRun = React.createClass({
 
   },
 
+
+
   onRunClick: function (event) {
     var startUrl  =this.props.url+"/"+this.props.data.id+"/start";
     $.ajax({
@@ -134,58 +158,147 @@ var ModelRun = React.createClass({
 
 
   },
+  
+  handleRemoveFromGstore: function(){
+    var descision=confirm("\nAre you sure you want to remove the model from Gstore?");
+    if(descision){
+        $.ajax({
+            url: '/remove_from_gstore',
+            method: 'POST',
+            dataType: 'json',
+            cache: false,
+            contentType: "application/json; charset=utf-8",
+            data:JSON.stringify({
+                model_id: this.state.id,
+                gstore_id: this.state.gstore_id
+            }),
+            success: function(data) {
+                this.setState({ gstore_Pushed: 'false', gstorePushFiles: [], gstore_id: null});
+
+            }.bind(this),
+            error: function(xhr, status, err) {
+              console.error(url, status, err.toString());
+            }.bind(this)
+        }); 
+    }
+  },
+
+  handlePushToGstore: function(){
+    if(this.state.isRunning == 'true'){
+      alert("\nSorry. Please wait for the model run to finish and then perform Gstore-PUSH");
+      return;
+    }
+    
+    if (this.state.gstorePushFiles.length ==0){
+      alert("\nSorry. You have not chosen any of the resources. \n\n Use the checkbox to choose the resources you want to push to gstore.\n\n\n");
+      return;
+    }
+
+    var descision=confirm("\nAre you sure you want to push the model to Gstore? This will take 1-3 minutes.\n\nThank you for your patience.\n\n\n");
+    if(descision){
+      this.setState({ gpush_btn_text: 'Please Wait...'});
+      var url = '/push_to_gstore';
+
+      $.ajax({
+          url: url,
+          method: 'POST',
+          dataType: 'json',
+          cache: false,
+          contentType: "application/json; charset=utf-8",
+          data:JSON.stringify({
+              model_id: this.state.id,
+              description: this.props.data.description,
+              model_name: this.props.data.model_name,
+              model_title: this.props.data.title,
+              push_files:this.state.gstorePushFiles,
+              resources: this.state.resources,
+              gstore_Pushed: this.state.gstore_Pushed
+          }),
+          success: function(data) {
+              this.setState({gstore_id: data.gstore_id});
+              this.setState({ gstore_Pushed: 'true', gpush_btn_text: 'Gstore-PUSH', gstorePushFiles: []});
+
+              // this.setState({ });
+              // this.setState({ });
+              // this.updateResource(); 
+
+              //
+
+
+          }.bind(this),
+          error: function(xhr, status, err) {
+            console.error(url, status, err.toString());
+          }.bind(this)
+      }); 
+    }
+
+  },
 
   render: function() {
-    var desc = converter.makeHtml(this.props.data.description);
-    return (
-      <div data-id="{this.props.data.id}" className="col-lg-12">
-        <ReactBootstrap.Panel header={this.props.data.title}
-          className="modelrun"  bsStyle="primary">
-          <div className="col-lg-6">
-            <ReactBootstrap.Table striped>
-            <tbody>
-              <tr>
-                <td>Title</td>
-                <td> {this.props.data.title}</td>
-              </tr>
-              <tr>
-                <td>Model</td>
-                <td> {this.props.data.model_name}</td>
-              </tr>
-              <tr>
-                <td>Status</td>
-                <td> {this.props.data.progress_state}</td>
-              </tr>
-              </tbody>
-            </ReactBootstrap.Table>
-            <div className="modelrundesc" >
-                <h4>Description</h4>
-                 <div dangerouslySetInnerHTML={{__html: desc}} ></div>
+        var desc = converter.makeHtml(this.props.data.description);
+
+        return (
+          <div data-id="{this.props.data.id}" className="col-lg-12">
+            <ReactBootstrap.Panel header={this.props.data.title}
+              className="modelrun"  bsStyle="primary">
+              <div className="col-lg-6">
+                <ReactBootstrap.Table striped>
+                <tbody>
+                  <tr>
+                    <td>Title</td>
+                    <td> {this.props.data.title}</td>
+                  </tr>
+                  <tr>
+                    <td>Model</td>
+                    <td> {this.props.data.model_name}</td>
+                  </tr>
+                  <tr>
+                    <td>Status</td>
+                    <td> {this.props.data.progress_state}</td>
+                  </tr>
+                  {this.state.gstore_Pushed=='true'?(<tr><td>Gstore Id</td><td> {this.state.gstore_id}</td></tr>):null}
+                  </tbody>
+                </ReactBootstrap.Table>
+                <div className="modelrundesc" >
+                    <h4>Description</h4>
+                     <div dangerouslySetInnerHTML={{__html: desc}} ></div>
+                  </div>
+
+                <ModelResourceList title='Resources' url={this.props.apiUrl} data={this.state.resources} addFileToGstore = {this.addFileToGstore}  deleteFileFromGstore = {this.deleteFileFromGstore}  modelPushed = {this.state.gstore_Pushed}></ModelResourceList>
+
+                
+                <ReactBootstrap.Table>
+                <tbody>
+                <tr>
+                <td> <ReactBootstrap.Button onClick={this.props.onDelete} bsSize="small" className="run-btn" bsStyle="danger">Delete</ReactBootstrap.Button>
+                </td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td>
+                <td>
+                {this.state.gstore_Pushed=='false'?
+                 (<ReactBootstrap.Button onClick={this.handlePushToGstore} bsSize="small" bsStyle="success">{this.state.gpush_btn_text}</ReactBootstrap.Button>)
+                 :(<ReactBootstrap.Button onClick={this.handleRemoveFromGstore} bsSize="small" bsStyle="warning">Gstore-Remove</ReactBootstrap.Button>)}
+                </td>
+                </tr>
+                </tbody>
+                </ReactBootstrap.Table>
+                
+                 
+                <div className="logbox">
+                  { this.props.data.logs && <h3>Logs</h3> }
+                  { this.props.data.logs }
+                </div>
+              </div>
+              <div ref="runBtn" className="col-lg-6 margin-bottom">
+                {this.state.progressButton}
+              </div>
+              <div className="col-lg-6" ref="progressbarcontainer">
+                {this.state.progressBars}
               </div>
 
-            <ModelResourceList title='Resources' url={this.props.apiUrl} data={this.state.resources} />
-            <ReactBootstrap.Button
-                                onClick={this.props.onDelete}
-                                bsSize="small" className="run-btn"
-                                bsStyle="danger">Delete</ReactBootstrap.Button>
-            <div className="logbox">
-              { this.props.data.logs && <h3>Logs</h3> }
-              { this.props.data.logs }
-            </div>
+            </ReactBootstrap.Panel>
           </div>
-          <div ref="runBtn" className="col-lg-6 margin-bottom">
-            {this.state.progressButton}
-          </div>
-          <div className="col-lg-6" ref="progressbarcontainer">
-            {this.state.progressBars}
-          </div>
-
-        </ReactBootstrap.Panel>
-      </div>
-    );
+        );
   }
 });
-
 
 var ModelRunList = React.createClass({
   onDelete:function(modelrun) {
@@ -212,10 +325,7 @@ var ModelRunList = React.createClass({
     var onModelRunProgress = this.props.onModelRunProgress;
     var modelrunNodes = this.props.data.map(function (modelrun) {
       return (
-        <ModelRun key={modelrun.id} ref={modelrun.id} onDelete={this.onDelete.bind(this, modelrun)}
-          onModelRunProgress={onModelRunProgress}
-          apiUrl={apiUrl}  url={url}
-          data={modelrun}>
+        <ModelRun key={modelrun.id} ref={modelrun.id} onDelete={this.onDelete.bind(this, modelrun)} onModelRunProgress={onModelRunProgress} apiUrl={apiUrl}  url={url} data={modelrun}>
 
         </ModelRun>
       );

@@ -52,7 +52,7 @@ var ModelRunBox = React.createClass({
       dataType: 'json',
       cache: false,
       success: function(data) {
-          //console.log('success!',data['objects'].length);
+          console.log('success!',data['objects']);
         this.setState({
           data: data['objects'],
           numPages:data.total_pages,

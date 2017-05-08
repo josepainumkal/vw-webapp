@@ -25,22 +25,30 @@ class Config:
     UPLOAD_FOLDER = 'uploads'
     DOWNLOAD_FOLDER = 'downloads'
 
-    GSTORE_USERNAME = os.environ.get('GSTORE_USERNAME', '')
-    GSTORE_PASSWORD = os.environ.get('GSTORE_PASSWORD', '')
-    GSTORE_HOST = os.environ.get('GSTORE_HOST', 'https://vwp-dev.unm.edu')
+    GSTORE_USERNAME = os.environ.get('GSTORE_USERNAME', 'josepainumkal@gmail.com')
+    GSTORE_PASSWORD = os.environ.get('GSTORE_PASSWORD', 'Rosh@2016')
+    GSTORE_HOST = os.environ.get('GSTORE_HOST', 'https://vwp-dev.unm.edu/')
 
-    SQLALCHEMY_DATABASE_URI = os.environ.get(
-        'SQLALCHEMY_DATABASE_URI', 'sqlite:///' + os.path.join(basedir, 'data-dev.sqlite'))
+    SQLALCHEMY_DATABASE_URI = os.environ.get('SQLALCHEMY_DATABASE_URI', 'sqlite:///' + os.path.join(basedir, 'data-dev.sqlite'))
 
-    SQLALCHEMY_BINDS = {
-        'users': os.environ.get('SQLALCHEMY_USER_DATABASE_URI', 'sqlite:///' + os.path.join(basedir, 'data-dev-user.sqlite'))
-    }
+    SQLALCHEMY_BINDS = {'users': os.environ.get('SQLALCHEMY_USER_DATABASE_URI', 'sqlite:///' + os.path.join(basedir, 'data-dev-user.sqlite'))}
 
     MODEL_HOST =\
         os.environ.get('MODEL_HOST', 'http://192.168.99.100:5000')
 
     AUTH_HOST =\
         os.environ.get('AUTH_HOST', 'http://192.168.99.100:5005')
+   
+    TEMP_CONTROL = os.environ.get('TEMP_CONTROL', '/control')
+    TEMP_DATA = os.environ.get('TEMP_DATA', '/data')
+    TEMP_PARAM = os.environ.get('TEMP_PARAM', '/control')
+    TEMP_LOG = os.environ.get('TEMP_LOG', '/log')
+    TEMP_OUTPUT = os.environ.get('TEMP_OUTPUT', '/output')
+    TEMP_ANIMATION = os.environ.get('TEMP_ANIMATION', '/animation')
+    TEMP_ANIMATION_ORIGINAL = os.environ.get('TEMP_ANIMATION_ORIGINAL', '/animation_original')
+    TEMP_STATSVAR_ORIGINAL = os.environ.get('TEMP_STATSVAR_ORIGINAL', '/statsvar_original')
+    TEMP_GSFLOW_LOG = os.environ.get('TEMP_GSFLOW_LOG', '/gsflow_log')
+    TEMP_STATSVAR = os.environ.get('TEMP_STATSVAR', '/statsvar')
 
     SESSION_COOKIE_NAME = os.environ.get(
         'VWWEBAPP_SESSION_COOKIE_NAME','vwsession')

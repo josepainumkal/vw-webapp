@@ -1,0 +1,266 @@
+<!DOCTYPE metadata SYSTEM 'http://www.fgdc.gov/metadata/fgdc-std-001-1998.dtd'>
+<metadata>
+	<idinfo>
+		<model_run_uuid>{{ model_run_uuid }}</model_run_uuid>
+		<citation>
+			<citeinfo>
+				<origin>Tri-State EPSCoR WC-WAVE</origin>
+				<pubdate>{{ proc_date }}</pubdate>
+				<title>{{ file_name }}</title>
+				<geoform>{{geoform}}</geoform>
+				<pubinfo>
+                    <pubplace>{{pubplace}}</pubplace>
+                    <publish>{{publish}}</publish>
+                </pubinfo>
+			</citeinfo>
+		</citation>
+		<descript>
+            <abstract>{{abstract}}</abstract>
+            <purpose>{{purpose}}</purpose>
+            <supplinf>{{supplinf}}</supplinf>
+        </descript>
+		<timeperd>
+			<timeinfo>
+				<rngdates>
+					<begdate>{{ beg_date }}</begdate>
+					<enddate>{{ end_date }}</enddate>
+				</rngdates>
+			</timeinfo>
+			<current>Year long record for which the ISNOBAL model was run</current>
+		</timeperd>
+		<status>
+			<progress>Complete</progress>
+			<update>As needed</update>
+		</status>
+		<spdom>
+			<bounding>
+				<westbc>{{ west_bound }}</westbc>
+				<eastbc>{{ east_bound }}</eastbc>
+				<northbc>{{ north_bound }}</northbc>
+				<southbc>{{ south_bound }}</southbc>
+			</bounding>
+		</spdom>
+                {% if theme_key or state %}
+		<keywords>
+                    {% if theme_key %}
+			<theme>
+			    <themekt>CF</themekt>
+			    <themekey>{{ theme_key }}</themekey>
+			</theme>		
+                        {% if model %}
+			<theme>
+				<themekt>None</themekt>
+				<themekey>{{ model }}</themekey>
+				<themekey>{{ theme_key }}</themekey>
+			</theme>
+                        {% endif %}
+                    {% endif %}
+			<place>
+				<placekt>None</placekt>
+				<placekey>{{ state }}</placekey>
+			</place>
+		</keywords>
+                {% endif %}
+        <accconst>{{accconst}}</accconst>
+        <useconst>{{useconst}}</useconst>
+		<ptcontac>
+			<cntinfo>
+				<cntperp>
+					<cntper>{{ researcher_name }}</cntper>
+				</cntperp>
+				<cntaddr>
+                                    <addrtype>mailing address</addrtype>
+                                        <address>{{ mailing_address }}</address>
+                                        <city>{{ city }}</city>
+                                        <state>{{ state }}</state>
+                                        <postal>{{ zip_code }}</postal>
+					<country>USA</country>
+				</cntaddr>
+                                <cntvoice>{{ researcher_phone }}</cntvoice>
+                                <cntemail>{{ researcher_email }}</cntemail>
+			</cntinfo>
+		</ptcontac>
+		<native>Unknown</native>
+	</idinfo>
+
+    <dataqual>
+        <logic>Unknown</logic>
+        <complete>Unknown</complete>
+        <posacc>
+            <horizpa>
+                <horizpar>Unknown</horizpar>
+                <qhorizpa>
+                    <horizpav>0.0</horizpav> 
+                    <horizpae>Unknown</horizpae>
+                </qhorizpa>
+            </horizpa>
+        </posacc>
+        <lineage>
+            <srcinfo>
+                <srccite>
+                    <citeinfo>
+                        <origin>Unknown</origin>
+                        <pubdate>20150404</pubdate>
+                        <title>Unknown</title>
+                        <pubinfo>
+                            <pubplace>Unknown</pubplace>
+                            <publish>Unknown</publish>
+                        </pubinfo>
+                    </citeinfo>
+                </srccite>
+                <typesrc>Unknown</typesrc>
+                <srctime>
+                    <timeinfo>
+                        <rngdates>
+                            <begdate>Unknown</begdate>
+                            <enddate>Unknown</enddate>
+                        </rngdates>
+                    </timeinfo>
+                    <srccurr>Unknown</srccurr>
+                </srctime>
+                <srccitea>Unknown</srccitea>
+                <srccontr>Unknown</srccontr>
+            </srcinfo>
+            <procstep>
+                <procdesc>Unknown</procdesc>
+                <procdate>Unknown</procdate>
+                <proccont>
+                    <cntinfo>
+                        <cntorgp>
+                            <cntorg>Unknown</cntorg>
+                        </cntorgp>
+                        <cntpos>Unknown</cntpos>
+                        <cntaddr>
+                            <addrtype>Unknown</addrtype>
+                            <address>Unknown</address>
+                            <address>Unknown</address>
+                            <city>Unknown</city>
+                            <state>Unknown</state>
+                            <postal>Unknown</postal>
+                            <country>Unknown</country>
+                        </cntaddr>
+                        <cntvoice>Unknown</cntvoice>
+                        <cntfax>Unknown</cntfax>
+                        <cntemail>Unknown</cntemail>
+                        <hours>Unknown</hours>
+                    </cntinfo>
+                </proccont>
+            </procstep>
+        </lineage>
+    </dataqual>
+	<spdoinfo>
+		<indspref>United States</indspref>
+		<direct>Raster</direct>
+		<rastinfo>
+            <rasttype>Pixel</rasttype> <!--Point, Pixel, Grid Cell, Voxel-->
+            <rowcount>1</rowcount><!--integer minimum of 1-->
+            <colcount>1</colcount><!--integer minimum of 1-->
+            <vrtcount>1</vrtcount><!--integer minimum of 1-->
+        </rastinfo>
+	</spdoinfo>
+	<eainfo>
+        <detailed>
+            <enttyp>
+                <enttypl>Unknown</enttypl>
+                <enttypd>Unknown</enttypd>
+                <enttypds>Unknown</enttypds>
+            </enttyp>
+            <attr>
+                <attrlabl>Unknown</attrlabl>
+                <attrdef>Unknown</attrdef>
+                <attrdefs>Unknown</attrdefs>
+                <attrdomv>
+                    <rdom>
+                        <rdommin>Unknown</rdommin>
+                        <rdommax>Unknown</rdommax>
+                        <attrunit>Unknown</attrunit>
+                    </rdom>
+                </attrdomv>
+            </attr>
+        </detailed>
+    </eainfo>
+        {% if lat_res and lon_res and map_units %}
+	<spref>
+		<horizsys>
+			<geograph>
+				<latres>{{ lat_res }}</latres>
+				<longres>{{ lon_res }}</longres>
+				<geogunit>{{ map_units }}</geogunit>
+			</geograph>
+		</horizsys>
+	</spref>
+        {% endif %}
+	<distinfo>
+		<distrib>
+			<cntinfo>
+				<cntorgp>
+					<cntorg>Earth Data Analysis Center</cntorg>
+				</cntorgp>
+				<cntpos>Clearinghouse Manager</cntpos>
+				<cntaddr>
+					<addrtype>mailing and physical</addrtype>
+					<address>MSC01 1110, Bandelier West Room 118</address>
+					<address>1 University of New Mexico</address>
+					<city>Albuquerque</city>
+					<state>NM</state>
+					<postal>87131-0001</postal>
+					<country>US</country>
+				</cntaddr>
+				<cntvoice>505-277-3622 ext. 230</cntvoice>
+				<cntfax>505-277-3614</cntfax>
+				<cntemail>clearinghouse@edac.unm.edu</cntemail>
+				<hours>8:00 am - 5:00 pm MT, M-F</hours>
+			</cntinfo>
+		</distrib>
+		<distliab>Although these data have been processed successfully on a computer system, no
+			warranty expressed or implied is made regarding the use of these data on any other
+			system, nor does the act of distribution constitute any such warranty</distliab>
+		<stdorder>
+			<digform>
+				<digtinfo>
+                                        <formname>{{ file_ext }}</formname>
+					<transize>{{ file_size }}</transize>
+				</digtinfo>
+				<digtopt>
+					<offoptn>
+						<offmedia>Web</offmedia>
+						<recfmt>API</recfmt>
+					</offoptn>
+				</digtopt>
+			</digform>
+			<fees>None.</fees>
+		</stdorder>
+	</distinfo>
+	<metainfo>
+        <metd>20130116</metd> 
+        <metc>
+            <cntinfo>
+                <cntorgp>
+                    <cntorg>Unknown</cntorg>
+                </cntorgp>
+                <cntpos>Unknown</cntpos>
+                <cntaddr>
+                    <addrtype>Unknown</addrtype>
+                    <address>Unknown</address>
+                    <address>Unknown</address>
+                    <address>Unknown</address>
+                    <city>Unknown</city>
+                    <state>Unknown</state>
+                    <postal>Unknown</postal>
+                </cntaddr>
+                <cntvoice>Unknown</cntvoice>
+                <cntfax>Unknown</cntfax>
+                <cntemail>Unknown</cntemail>
+                <hours>Unknown</hours>
+            </cntinfo>
+        </metc>
+        <metstdn>Unknown</metstdn>
+        <metstdv>Unknown</metstdv>
+        <mettc>local time</mettc>
+        <metsi>
+            <metscs>Unknown</metscs>
+            <metsc>Unknown</metsc>
+            <metshd>Unknown</metshd>
+        </metsi>
+    </metainfo>
+</metadata>

@@ -1,0 +1,60 @@
+{
+    "orig_epsg": "{% if orig_epsg %}{{ orig_epsg }}{% else %}4326{% endif %}",
+    "description": "{{ description }}",
+    "taxonomy": "{{ taxonomy }}",
+    "basename": "{{ basename }}",
+    "parent_model_run_uuid": "{{ parent_model_run_uuid }}",
+    "model_run_uuid": "{{ model_run_uuid }}",
+    "model_vars": "{% if model_vars %}{{ model_vars }}{% else %}{% endif %}",
+    "model_set": "{{ model_set }}",
+    "model_set_type": "{{ model_set_type }}",
+    "model_set_taxonomy": "{{ model_set_taxonomy }}",
+    "spatial": {
+        "geomtype": "{{ model_set_taxonomy }}",
+        "records":"1",
+        "epsg": "{% if epsg %}{{ epsg }}{% else %}4326{% endif %}",
+        "features":"1",
+        "bbox": "{{ west_bound }},{{ south_bound }},{{ east_bound }},{{ north_bound }}"
+    },
+    "dates": {
+        "start": "{{ start_datetime }}",
+        "end": "{{ end_datetime }}"
+    },
+    "records": "1",
+    "active": "True",
+    "services": [
+    "{{ wms_str }}",
+    "{{ wcs_str }}"
+    ],
+    "lastupdate": "{{lastupdate}}",
+    "uuid": "{{parent_model_run_uuid}}",
+    "model_run_name": "{{model_run_name}}",
+    "sources": [{
+        "mimetype": "{{ mimetype }}",
+        "files": ["{{ input_file_path }}"],
+        "set": "original",
+        "external": "False",
+        "extension": "{{ file_ext }}"
+    }],
+    "standards": [
+        "FGDC-STD-001-1998",
+        "ISO-19115:2003",
+        "ISO-19119",
+        "ISO-19110"
+    ],
+    "formats": [
+        "{{ file_ext }}"
+    ],
+    "type": "{{ type }}",
+    "categories": [{
+            "location": "{{ watershed_name }}",
+            "modelname": "{% if model_name %}{{ model_name }}{% else %}reference{% endif %}",
+            "state": "{{ state }}"
+    }],
+    "metadata": {
+        "xml": "{{ fgdc_metadata }}",
+        "upgrade": "true",
+        "standard": "FGDC-STD-001-1998"
+    },
+    "apps": ["vwp"]
+}
