@@ -117,7 +117,7 @@ def gstore_push(model_id,model_name, model_title, description, push_files):
     api_headers={'Authorization': 'JWT %s' % session['api_token']}
     for res_id in push_files:
             model_resource_url = app.config['MODEL_HOST']+'/api/modelresources/'+str(res_id)
-            r = requests.get(url=model_resource_url, headers=api_headers)
+            r = requests.get(url=model_resource_url, headers=api_headers, verify=False)
             resp_dict = json.loads(r.content)
             resource_url = resp_dict['resource_url']
             resource_type = resp_dict['resource_type']
@@ -288,11 +288,11 @@ def push_to_gstore():
         # 1) update gstore_Pushed attribute of pushed model resources
         for res_id in push_files:
             model_resource_url = app.config['MODEL_HOST']+'/api/modelresources/gstorepush/'+str(res_id)
-            r = requests.put(url=model_resource_url, headers=api_headers)
+            r = requests.put(url=model_resource_url, headers=api_headers, verify=False)
 
         # 2) update gstorePushed attibute of model
         model_id_apiUrl = app.config['MODEL_HOST']+'/api/modelruns/gstorepush/'+str(model_id)+'/'+str(gstore_id)
-        r = requests.put(url=model_id_apiUrl, headers=api_headers)
+        r = requests.put(url=model_id_apiUrl, headers=api_headers, verify=False)
         resp_dict = json.loads(r.content)
        
         return json.dumps(resp)
@@ -325,7 +325,7 @@ def remove_from_gstore():
             api_headers={'Authorization': 'JWT %s' % session['api_token']}
             model_run_url = app.config['MODEL_HOST']+'/api/modelruns/'+str(model_id)
 
-            r = requests.get(url=model_run_url, headers=api_headers)
+            r = requests.get(url=model_run_url, headers=api_headers, verify=False)
             resp_dict = json.loads(r.content)
             
             # 1) change gstore_Push attribute of resources to false
@@ -334,11 +334,11 @@ def remove_from_gstore():
                 res_id = res['id']
                 if res['gstore_Pushed'] == 'true':
                     model_resource_url = app.config['MODEL_HOST']+'/api/modelresources/gstore_remove/'+str(res_id) 
-                    r = requests.put(url=model_resource_url, headers=api_headers)
+                    r = requests.put(url=model_resource_url, headers=api_headers, verify=False)
 
             # 2) change gstore_Push attribute of model to false
             model_id_apiUrl = app.config['MODEL_HOST']+'/api/modelruns/gstore_remove/'+str(model_id)+'/'+str(gstore_id)
-            r = requests.put(url=model_id_apiUrl, headers=api_headers)
+            r = requests.put(url=model_id_apiUrl, headers=api_headers, verify=False)
             resp_dict = json.loads(r.content)
             return json.dumps(resp_dict)
 
