@@ -16,6 +16,7 @@ var ModelResource = React.createClass({
     this.props.deleteFromGstore(e.target.value);
     console.log('Deleted!',e.target.value);
   }
+ 
   },
   getResource: function(){
     var modelresourceUrl = this.props.url+'modelresources/'+this.props.id;
@@ -59,7 +60,7 @@ var ModelResource = React.createClass({
                       <tr>
                         <td>{this.state.type}</td>
                         <td><a href={this.state.url} className="">{this.state.name}</a></td>
-                        <td><input type="checkbox" name="gstore_push" value={this.props.id} onChange={this.handleGstoreCheckbox}/></td>
+                        <td><input type="checkbox" name="gstore_push" value={this.props.id} onChange={this.handleGstoreCheckbox}  defaultChecked/></td>
                       </tr>
               );
           }

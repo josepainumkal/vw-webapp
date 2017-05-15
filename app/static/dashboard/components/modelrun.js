@@ -1,7 +1,17 @@
 var converter = new showdown.Converter();
 
 var ModelRun = React.createClass({
+  
+
   getInitialState: function() {
+
+   // console.log('success!',this.props.data.resources.length);
+   var init_gstorePushFiles=[];
+   for(var i=0;i<this.props.data.resources.length;i++){
+       // console.log('onebyone!',this.props.data.resources[i].id);
+       init_gstorePushFiles.push(parseInt(this.props.data.resources[i].id));
+   }
+   // console.log('init_gstorePushFiles!',init_gstorePushFiles);
 
     var runButton;
    
@@ -23,14 +33,13 @@ var ModelRun = React.createClass({
 
     }
 
-
     return {
       id: this.props.data.id,
       isRunning:false,
       progressBars: null,
       progressButton: runButton,
       resources: this.props.data.resources,
-      gstorePushFiles: [],
+      gstorePushFiles: init_gstorePushFiles,
       gstore_Pushed: this.props.data.gstore_Pushed,
       gpush_btn_text: 'Gstore-PUSH',
       gstore_id: this.props.data.gstore_id
@@ -38,19 +47,19 @@ var ModelRun = React.createClass({
     };
   },
   addFileToGstore: function(file){
-    this.setState({
-        gstorePushFiles: this.state.gstorePushFiles.concat([file])
-    });
-    console.log(file);
-    console.log(this.state.gstorePushFiles);
+    this.state.gstorePushFiles.push(parseInt(file))
+
+    // this.setState({
+    //     gstorePushFiles: this.state.gstorePushFiles.push(parseInt(file))
+    // });
+    // console.log('addFileToGstore_afterAdd!',this.state.gstorePushFiles);
   },
   deleteFileFromGstore: function(file){
-    var gstorePushFiles = this.state.gstorePushFiles.filter(function(delfile){
-      return file !== delfile;
-    });
 
-    this.setState({ gstorePushFiles: gstorePushFiles });
-    console.log(this.state.gstorePushFiles);
+    this.state.gstorePushFiles = jQuery.grep(this.state.gstorePushFiles, function(value) {return value != file; });
+    // this.setState({ gstorePushFiles: temp });
+    // console.log('deleteFileFromGstore:After_Delete!',this.state.gstorePushFiles);
+    
   },
   getButtonClass: function(state){
     return modelrunApi.states_vars[state];
@@ -133,8 +142,6 @@ var ModelRun = React.createClass({
 
   },
 
-
-
   onRunClick: function (event) {
     var startUrl  =this.props.url+"/"+this.props.data.id+"/start";
     $.ajax({
@@ -156,7 +163,6 @@ var ModelRun = React.createClass({
       }.bind(this)
     });
 
-
   },
   
   handleRemoveFromGstore: function(){
@@ -173,7 +179,14 @@ var ModelRun = React.createClass({
                 gstore_id: this.state.gstore_id
             }),
             success: function(data) {
-                this.setState({ gstore_Pushed: 'false', gstorePushFiles: [], gstore_id: null});
+
+              var init_gstorePushFiles=[];
+              for(var i=0;i<this.props.data.resources.length;i++){
+                  //console.log('onebyone!',this.props.data.resources[i].id);
+                  init_gstorePushFiles.push(parseInt(this.props.data.resources[i].id));
+              }
+
+                this.setState({ gstore_Pushed: 'false', gstorePushFiles: init_gstorePushFiles, gstore_id: null});
 
             }.bind(this),
             error: function(xhr, status, err) {
