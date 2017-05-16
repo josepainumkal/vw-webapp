@@ -87,6 +87,8 @@
             {% endif %}
 
             {% endfor %}
+            <li><a href="{{config['PRMS_TOOL']}}">PRMS Tool</a></li>
+            <li><a href="{{config['CONVERTER_TOOL']}}">Conversion Tools</a></li>
 
             <!-- profile -->
             {% if current_user and current_user.is_authenticated() %}
