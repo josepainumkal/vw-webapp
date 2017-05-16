@@ -41,13 +41,9 @@ class Config:
 
     AUTH_HOST =\
         os.environ.get('AUTH_HOST', 'http://192.168.99.100:5005')
-    
+
     PRMS_TOOL = os.environ.get('PRMS_TOOL', 'https://prms.virtualwatershed.org/')
     CONVERTER_TOOL = os.environ.get('CONVERTER_TOOL', 'https://converter.virtualwatershed.org/')
-    
-        
-                    <li><a href="{{config['PRMS_TOOL']}}">PRMS Tool</a></li>
-            <li><a href="{{config['CONVERTER_TOOL']}}">Conversion Tools</a></li>
 
     SESSION_COOKIE_NAME = os.environ.get(
         'VWWEBAPP_SESSION_COOKIE_NAME','vwsession')
