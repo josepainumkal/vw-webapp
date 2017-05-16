@@ -67,9 +67,27 @@
         "name": "Moinul Hossain",
         "institute": "University of Nevada, Reno",
         "department": "Computer Science and Engineering",
-        "role": "PhD Student",
+        "role": "Masters Student",
         "photo": "/static/images/headshots/moinul-hossain.jpg",
         "blurb": "Moinul is the lead designer and developer of the Virtual Watershed modeling REST API, which will allow many researchers to run or couple a variety of models all in parallel. He has also made significant contributions to the Virtual Watershed web app and PRMS modeling adaptors."
+    },
+    {
+        "component": "ci",
+        "name": "Jose T Painumkal",
+        "institute": "University of Nevada, Reno",
+        "department": "Computer Science and Engineering",
+        "role": "Masters Student",
+        "photo": "/static/images/headshots/jose-painumkal.jpg",
+        "blurb": "Jose joined the project in June 2016 and is the lead developer, maintainer of the Virtual Watershed portal since then. He has developed several tools for improving the modelling capabilities of Virtual Watershed. Some of his important works include integration of data converters for PRMS modelling, python API client for facilitating storage and retrieval of geospatial data, and  a web tool for PRMS model modification for scenario-based studies."
+    },
+    {
+        "component": "ci",
+        "name": "Rui Wu",
+        "institute": "University of Nevada, Reno",
+        "department": "Computer Science and Engineering",
+        "role": "PhD Student",
+        "photo": "/static/images/headshots/rui-wu.jpg",
+        "blurb": "Rui Wu is a Ph.D. student in the Department of Computer Science and Engineering at the University of Nevada,Reno, USA. He started the Ph.D. program in Spring 2014 after obtaining in 2013 a Bachelor&#39;s degree in Computer Science and Technology from Jilin University, China. His main research interests are in data analysis, data visualization, and software engineering."
     },
     {
         "component": "ci",
