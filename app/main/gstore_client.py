@@ -15,6 +15,7 @@ import urllib
 import uuid
 
 from datetime import datetime, date, timedelta
+from flask import current_app as app
 from jinja2 import Environment, FileSystemLoader
 
 requests.packages.urllib3.disable_warnings()
@@ -58,6 +59,32 @@ class VWClient:
         self.session = requests.Session()
         self.auth = (self.uname, self.passwd)
 
+        self.tie_account_url = self.host_url+"createexternalapp"
+        self.show_external_users_url = self.host_url+"showexternalusers"
+        self.create_external_users_url = self.host_url+"createexternaluser"
+        self.verify_external_user_url = self.host_url+"showexternalusers?userid="
+
+        self.search_url = self.host_url+"/apps/vwp/search/datasets.json"
+
+
+    def search_datasets(self, externaluserid=None, externalapp=None, model_run_uuid=None):
+        payload={}
+        if externalapp is not None:
+            payload['externalapp'] = externalapp
+        if externaluserid is not None:
+            payload['externaluserid'] = externaluserid
+        if model_run_uuid is not None:
+            payload['model_run_uuid'] = model_run_uuid
+        
+        result = self.session.get(self.search_url, params=payload, verify=False)
+        # result = json.loads(result.content)
+
+
+        result = json.dumps(json.loads(result.content))
+        print result
+
+    
+
     def authenticate(self):
         try:
             login = self.session.get(self.auth_url, auth=(self.uname,self.passwd), verify=False)     
@@ -67,10 +94,63 @@ class VWClient:
                 return True 
         except Exception as e:
             return False
-        
-        # print tokenjson['preauthurl']
-        # print tokenjson['preauthtoken']
-        # print login.status_code
+
+    def tie_account(self, application_name):
+        result = None
+        try:    
+            # application_name='virtualwatershed.org'
+            payload = {'application':application_name}
+            result = self.session.post(self.tie_account_url, data=json.dumps(payload), verify=False)
+            # print result.status_code
+            if result.status_code == 200 or result.status_code == 422:
+                # 422 means Relationship already exists
+                return True
+            
+        except Exception as e:
+            if result.status_code == 422:
+                return True
+            else:
+                print '\t', result.content
+                return False
+
+    
+    def get_external_users(self, application_name):
+        # returns list of users
+        payload = {'application':application_name}
+        result = self.session.get(self.show_external_users_url, data=json.dumps(payload), verify=False)
+
+        result = json.loads(result.content)
+        return result['userids']
+
+    def verify_external_user(self, application_name, user_uuid):
+        result = None
+        try:
+            payload = {'application':application_name}
+            result = self.session.get(self.verify_external_user_url+user_uuid, data=json.dumps(payload), verify=False)
+            result = json.loads(result.content)
+            if result['exists'] == 'True':
+                return True
+            else:
+                return False
+
+        except Exception as e:
+            print '\t', result.content
+            return False
+
+
+    def create_external_user(self, application_name, user_uuid):
+        # returns list of users
+        try:   
+            payload = {'application':application_name, 'userid':user_uuid}
+            result = self.session.post(self.create_external_users_url, data=json.dumps(payload), verify=False)
+            if result.status_code != 200:
+                return True
+            else:
+                print '\t', result.content
+                return False
+        except Exception as e:
+            print '\t', result.content
+            return False
 
     
     # Verifies if a model run UUID already exists | Returns True or False
@@ -94,9 +174,8 @@ class VWClient:
         if result.status_code == 200:
             return result.text    #result.text is the modelID in VWP platform
         else:
-            print result.text
-
-    
+            app.logger.error(result.text)
+ 
 #  Deletes a model run in VWP | Returns True, if successfully deleted
     def deleteModelRun(self, model_run_uuid):
 #        Delete a model run associated with model_run_uuid
@@ -107,14 +186,13 @@ class VWClient:
         result = self.session.delete(self.modelrun_delete_url,data=json.dumps({'model_uuid': model_run_uuid}), verify=False)
 
         if result.status_code == 200:
-            print result.text
             return True
         elif result.status_code == 422:
+            app.logger.error('The model run uuid is not located in the list of model runs')
             return False
-            print 'The model run uuid is not located in the list of model runs'
         else:
+            app.logger.error('Unknown exception occurred on deleting model run')
             return False
-            print 'Unknown exception occurred on deleting model run'
 
 
     def uploadModelData_swift(self, modelID_VWP, file_name):
@@ -156,10 +234,8 @@ class VWClient:
         if r.status_code == 200:
             print "File has successfully uploaded to VWP!"
         else:
-            raise requests.HTTPError("Swift Upload Failed! Server response:\n" + res.text)
-            print "Download failure"
-            print r.text
-
+            app.logger.error(r.content)
+            raise requests.HTTPError("Swift Upload Failed! Server response:\n" + r.text)
         return r
 
 
@@ -178,6 +254,9 @@ class VWClient:
                                        data=watershed_metadata,
                                        auth=(self.uname, self.passwd),
                                        verify=False)
+                
+                if result.status_code != 200:
+                    app.logger.error(r.content)
 
                 logging.debug(result.content)
 
@@ -186,6 +265,7 @@ class VWClient:
 
             except requests.HTTPError:
                 num_tries += 1
+                app.logger.error(result.content)
                 continue
 
         return result
@@ -218,7 +298,7 @@ class VWClient:
                            model_set_type=None, model_set_taxonomy=None,
                            taxonomy=None, water_year_start=2010,
                            water_year_end=2011, config_file=None, dt=None,
-                           model_set=None, model_vars=None, file_ext=None,
+                           model_set=None, model_vars=None, file_ext=None, externaluserid=None,
                            **kwargs):
         """
         Generate metadata for input_file.
@@ -259,7 +339,7 @@ class VWClient:
         except (ValueError, IndexError):
             pass
 
-       ##########################################
+       ############ PRMS ##########################
         if model_name.lower() == 'prms':
             if file_ext == 'nc':
                 model_set_type = 'vis'
@@ -303,7 +383,8 @@ class VWClient:
             if 'proc_date' in kwargs:
                 proc_date = kwargs['proc_date']
             else:
-                proc_date = '20150505'
+                # proc_date = '20150505'
+                proc_date = datetime.now().strftime ("%Y%m%d")
 
             fgdc_metadata = make_fgdc_metadata(input_basename, config,
                                                model_run_uuid, start_datetime,
@@ -368,7 +449,7 @@ class VWClient:
                                     model_vars=model_vars,
                                     start_datetime=start_datetime_str,
                                     end_datetime=end_datetime_str,
-                                    file_ext=file_ext, **kwargs)
+                                    file_ext=file_ext, externaluserid=externaluserid, **kwargs)
 
 
     def make_fgdc_metadata(self, file_name, config, model_run_uuid, beg_date, end_date,
@@ -497,7 +578,7 @@ class VWClient:
 
     def make_watershed_metadata(self, file_name, config, parent_model_run_uuid,
                                 model_run_uuid, model_set, watershed_name,
-                                state, fgdc_metadata=None, file_ext=None,
+                                state, fgdc_metadata=None, file_ext=None, externaluserid=None,
                                 **kwargs):
 
         """ For a single `file_name`, write the corresponding Virtual Watershed JSON
@@ -643,5 +724,8 @@ class VWClient:
                                  input_file_path=input_file_path,
                                  fgdc_metadata=fgdc_metadata,
                                  file_ext=file_ext,
+                                 externaluserid = externaluserid,
                                  **kwargs) + '\n'
+
+        # print '\n\n\n\n\nmake_watershed_metadata: \n\n\n\n', output
         return output

@@ -8,6 +8,7 @@ Date: 20 January 2016
 """
 import json
 import os
+import uuid
 import shutil
 import urllib
 import time
@@ -22,6 +23,8 @@ from functools import wraps
 from flask.ext.security import login_required, current_user
 from gstore_client import VWClient
 import requests
+from ..models import User
+from .. import db
 
 requests.packages.urllib3.disable_warnings()
 
@@ -100,8 +103,27 @@ def gstore_push(model_id,model_name, model_title, description, push_files):
     gsflow_log = app_root + app.config['TEMP_GSFLOW_LOG']
     statsvar = app_root + app.config['TEMP_STATSVAR']
 
+    if current_user.uuid is None:
+        user_details = User.query.get(current_user.id)
+        if user_details:
+            user_details.uuid = str(uuid.uuid4())
+            db.session.commit()
+
+            # user_details=user_details.update()
+
     vwclient = VWClient(gstore_url, gstore_uname, gstore_pwd)
     vwclient.authenticate()
+
+    externaluserid = current_user.uuid
+    vwclient.tie_account(application_name='virtualwatershed.org')
+
+
+    if externaluserid is not None:
+        resp_verify = vwclient.verify_external_user(application_name='virtualwatershed.org', user_uuid=externaluserid)
+        if resp_verify == False:
+            resp_create_external_user = vwclient.create_external_user(application_name='virtualwatershed.org', user_uuid=externaluserid)
+
+
 
     model_run_name = model_title+'_'+time.strftime("%d/%m/%Y_%I:%M:%S")
     modeluuid_vwp = vwclient.createNewModelRun(model_id, model_run_name, model_name, description)
@@ -121,6 +143,7 @@ def gstore_push(model_id,model_name, model_title, description, push_files):
             resp_dict = json.loads(r.content)
             resource_url = resp_dict['resource_url']
             resource_type = resp_dict['resource_type']
+            file_ext = resource_url.split('.')[1] 
 
             if resource_type =='control':
                 urllib.urlretrieve(resource_url, control_file)
@@ -131,10 +154,11 @@ def gstore_push(model_id,model_name, model_title, description, push_files):
                 else:
                     watershed_metadata = vwclient.metadata_from_file(input_file=control_file,parent_model_run_uuid=modeluuid_vwp, 
                                                     model_run_uuid=modeluuid_vwp, model_run_name=model_run_name, description=description,
-                                                    watershed_name='Lehman Creek', state='Nevada',model_name=model_name ,model_set='inputs')
+                                                    watershed_name='Lehman Creek', state='Nevada',model_name=model_name, model_set='inputs', file_ext=file_ext, externaluserid = externaluserid)
                     metadata_push = vwclient.insert_metadata(watershed_metadata=watershed_metadata)   
                     if metadata_push.status_code !=200:
                         file_metadataUpload_failed.append('control')
+                       
 
             elif resource_type =='data':
                 urllib.urlretrieve(resource_url, data_file)
@@ -145,10 +169,10 @@ def gstore_push(model_id,model_name, model_title, description, push_files):
                 else:
                     watershed_metadata = vwclient.metadata_from_file(input_file=data_file,parent_model_run_uuid=modeluuid_vwp, 
                                                     model_run_uuid=modeluuid_vwp, model_run_name=model_run_name, description=description,
-                                                    watershed_name='Lehman Creek', state='Nevada',model_name=model_name ,model_set='inputs')
+                                                    watershed_name='Lehman Creek', state='Nevada',model_name=model_name ,model_set='inputs', file_ext=file_ext, externaluserid = externaluserid)
                     metadata_push = vwclient.insert_metadata(watershed_metadata=watershed_metadata)   
                     if metadata_push.status_code !=200:
-                        file_metadataUpload_failed.append('data') 
+                        file_metadataUpload_failed.append('data')              
 
             elif resource_type =='param':
                 urllib.urlretrieve(resource_url, param_file)
@@ -159,10 +183,11 @@ def gstore_push(model_id,model_name, model_title, description, push_files):
                 else:
                     watershed_metadata = vwclient.metadata_from_file(input_file=param_file,parent_model_run_uuid=modeluuid_vwp, 
                                                     model_run_uuid=modeluuid_vwp, model_run_name=model_run_name, description=description,
-                                                    watershed_name='Lehman Creek', state='Nevada',model_name=model_name ,model_set='inputs')
+                                                    watershed_name='Lehman Creek', state='Nevada',model_name=model_name ,model_set='inputs', file_ext=file_ext, externaluserid = externaluserid)
                     metadata_push = vwclient.insert_metadata(watershed_metadata=watershed_metadata)   
                     if metadata_push.status_code !=200:
                         file_metadataUpload_failed.append('param')  
+                        
             elif resource_type =='animation':
                 urllib.urlretrieve(resource_url, animation)
                 animation = app.config['TEMP_ANIMATION'].strip("/")
@@ -172,10 +197,11 @@ def gstore_push(model_id,model_name, model_title, description, push_files):
                 else:
                     watershed_metadata = vwclient.metadata_from_file(input_file=animation,parent_model_run_uuid=modeluuid_vwp, 
                                                     model_run_uuid=modeluuid_vwp, model_run_name=model_run_name, description=description,
-                                                    watershed_name='Lehman Creek', state='Nevada',model_name=model_name ,model_set='outputs')
+                                                    watershed_name='Lehman Creek', state='Nevada',model_name=model_name ,model_set='outputs',  file_ext=file_ext, externaluserid = externaluserid)
                     metadata_push = vwclient.insert_metadata(watershed_metadata=watershed_metadata)   
                     if metadata_push.status_code !=200:
                         file_metadataUpload_failed.append('animation')  
+                        
             elif resource_type =='log':
                 urllib.urlretrieve(resource_url, log)
                 log = app.config['TEMP_LOG'].strip("/")
@@ -185,10 +211,12 @@ def gstore_push(model_id,model_name, model_title, description, push_files):
                 else:
                     watershed_metadata = vwclient.metadata_from_file(input_file=log,parent_model_run_uuid=modeluuid_vwp, 
                                                     model_run_uuid=modeluuid_vwp, model_run_name=model_run_name, description=description,
-                                                    watershed_name='Lehman Creek', state='Nevada',model_name=model_name ,model_set='outputs')
+                                                    watershed_name='Lehman Creek', state='Nevada',model_name=model_name ,model_set='outputs', file_ext=file_ext, externaluserid = externaluserid)
                     metadata_push = vwclient.insert_metadata(watershed_metadata=watershed_metadata)   
                     if metadata_push.status_code !=200:
                         file_metadataUpload_failed.append('log')  
+
+
             elif resource_type =='output':
                 urllib.urlretrieve(resource_url, output_file)
                 output_file = app.config['TEMP_OUTPUT'].strip("/")
@@ -198,10 +226,12 @@ def gstore_push(model_id,model_name, model_title, description, push_files):
                 else:
                     watershed_metadata = vwclient.metadata_from_file(input_file=output_file,parent_model_run_uuid=modeluuid_vwp, 
                                                     model_run_uuid=modeluuid_vwp, model_run_name=model_run_name, description=description,
-                                                    watershed_name='Lehman Creek', state='Nevada',model_name=model_name ,model_set='outputs')
+                                                    watershed_name='Lehman Creek', state='Nevada',model_name=model_name ,model_set='outputs', file_ext=file_ext, externaluserid = externaluserid)
                     metadata_push = vwclient.insert_metadata(watershed_metadata=watershed_metadata)   
                     if metadata_push.status_code !=200:
                         file_metadataUpload_failed.append('output')  
+                       
+
             elif resource_type =='animation_original':
                 urllib.urlretrieve(resource_url, animation_original)
                 animation_original = app.config['TEMP_ANIMATION_ORIGINAL'].strip("/")
@@ -211,10 +241,11 @@ def gstore_push(model_id,model_name, model_title, description, push_files):
                 else:
                     watershed_metadata = vwclient.metadata_from_file(input_file=animation_original,parent_model_run_uuid=modeluuid_vwp, 
                                                     model_run_uuid=modeluuid_vwp, model_run_name=model_run_name, description=description,
-                                                    watershed_name='Lehman Creek', state='Nevada',model_name=model_name ,model_set='outputs')
+                                                    watershed_name='Lehman Creek', state='Nevada',model_name=model_name ,model_set='outputs',  file_ext=file_ext, externaluserid = externaluserid)
                     metadata_push = vwclient.insert_metadata(watershed_metadata=watershed_metadata)   
                     if metadata_push.status_code !=200:
                         file_metadataUpload_failed.append('animation_original')  
+                        
             elif resource_type =='statsvar_original':
                 urllib.urlretrieve(resource_url, statsvar_original)
                 statsvar_original = app.config['TEMP_STATSVAR_ORIGINAL'].strip("/")
@@ -224,10 +255,11 @@ def gstore_push(model_id,model_name, model_title, description, push_files):
                 else:
                     watershed_metadata = vwclient.metadata_from_file(input_file=statsvar_original,parent_model_run_uuid=modeluuid_vwp, 
                                                     model_run_uuid=modeluuid_vwp, model_run_name=model_run_name, description=description,
-                                                    watershed_name='Lehman Creek', state='Nevada',model_name=model_name ,model_set='outputs')
+                                                    watershed_name='Lehman Creek', state='Nevada',model_name=model_name ,model_set='outputs', file_ext=file_ext, externaluserid = externaluserid)
                     metadata_push = vwclient.insert_metadata(watershed_metadata=watershed_metadata)   
-                    if metadata_push.status_code !=200:
-                        file_metadataUpload_failed.append('statsvar_original')  
+                    if metadata_push.status_code !=200: 
+                        file_metadataUpload_failed.append('statsvar_original') 
+                        
             elif resource_type =='gsflow_log':
                 urllib.urlretrieve(resource_url, gsflow_log)
                 gsflow_log = app.config['TEMP_GSFLOW_LOG'].strip("/")
@@ -237,10 +269,11 @@ def gstore_push(model_id,model_name, model_title, description, push_files):
                 else:
                     watershed_metadata = vwclient.metadata_from_file(input_file=gsflow_log,parent_model_run_uuid=modeluuid_vwp, 
                                                     model_run_uuid=modeluuid_vwp, model_run_name=model_run_name, description=description,
-                                                    watershed_name='Lehman Creek', state='Nevada',model_name=model_name ,model_set='outputs')
+                                                    watershed_name='Lehman Creek', state='Nevada',model_name=model_name ,model_set='outputs', file_ext=file_ext, externaluserid = externaluserid)
                     metadata_push = vwclient.insert_metadata(watershed_metadata=watershed_metadata)   
                     if metadata_push.status_code !=200:
                         file_metadataUpload_failed.append('gsflow_log')  
+                       
             elif resource_type =='statsvar':
                 urllib.urlretrieve(resource_url, statsvar)
                 statsvar = app.config['TEMP_STATSVAR'].strip("/")
@@ -250,12 +283,12 @@ def gstore_push(model_id,model_name, model_title, description, push_files):
                 else:
                     watershed_metadata = vwclient.metadata_from_file(input_file=statsvar,parent_model_run_uuid=modeluuid_vwp, 
                                                     model_run_uuid=modeluuid_vwp, model_run_name=model_run_name, description=description,
-                                                    watershed_name='Lehman Creek', state='Nevada',model_name=model_name ,model_set='outputs')
+                                                    watershed_name='Lehman Creek', state='Nevada',model_name=model_name ,model_set='outputs', file_ext=file_ext, externaluserid = externaluserid)
                     metadata_push = vwclient.insert_metadata(watershed_metadata=watershed_metadata)   
                     if metadata_push.status_code !=200:
                         file_metadataUpload_failed.append('statsvar')  
             else:
-                print "Unknown resource type"
+                app.logger.error("Unknown resource type")
 
 
     resp['failed_file_upload'] = file_upload_filed

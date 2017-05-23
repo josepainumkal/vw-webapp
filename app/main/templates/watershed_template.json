@@ -1,6 +1,7 @@
 {
     "orig_epsg": "{% if orig_epsg %}{{ orig_epsg }}{% else %}4326{% endif %}",
     "description": "{{ description }}",
+    "externaluserid": "{{ externaluserid }}",
     "taxonomy": "{{ taxonomy }}",
     "basename": "{{ basename }}",
     "parent_model_run_uuid": "{{ parent_model_run_uuid }}",
@@ -27,7 +28,6 @@
     "{{ wcs_str }}"
     ],
     "lastupdate": "{{lastupdate}}",
-    "uuid": "{{parent_model_run_uuid}}",
     "model_run_name": "{{model_run_name}}",
     "sources": [{
         "mimetype": "{{ mimetype }}",

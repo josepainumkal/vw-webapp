@@ -50,6 +50,9 @@ class Config:
     TEMP_GSFLOW_LOG = os.environ.get('TEMP_GSFLOW_LOG', '/gsflow_log')
     TEMP_STATSVAR = os.environ.get('TEMP_STATSVAR', '/statsvar')
 
+    # Configure logging
+    LOGGING_LOCATION = 'app/static/vw-webapp.log'
+    
     SESSION_COOKIE_NAME = os.environ.get(
         'VWWEBAPP_SESSION_COOKIE_NAME','vwsession')
     SESSION_COOKIE_DOMAIN = os.environ.get(

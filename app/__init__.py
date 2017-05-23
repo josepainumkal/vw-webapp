@@ -12,6 +12,7 @@ from flask.ext.security import Security
 
 from flask.ext.security import SQLAlchemyUserDatastore
 from flask.ext.cache import Cache
+import logging
 
 
 
@@ -68,5 +69,13 @@ def create_app(config_name):
 
     from .api import api as api_blueprint
     app.register_blueprint(api_blueprint, url_prefix='/api')
+
+    # Configure logging
+    formatter = logging.Formatter("[%(asctime)s] {%(pathname)s:%(lineno)d} %(levelname)s - %(message)s")
+    handler = logging.FileHandler(app.config['LOGGING_LOCATION'])
+    handler.setLevel(logging.INFO)
+    # formatter = logging.Formatter(app.config['LOGGING_FORMAT'])
+    handler.setFormatter(formatter)
+    app.logger.addHandler(handler)
 
     return app
