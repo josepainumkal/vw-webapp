@@ -143,7 +143,7 @@ def gstore_push(model_id,model_name, model_title, description, push_files):
             resp_dict = json.loads(r.content)
             resource_url = resp_dict['resource_url']
             resource_type = resp_dict['resource_type']
-            file_ext = resource_url.split('.')[1] 
+            file_ext = resource_url.split('.')[-1] 
 
             if resource_type =='control':
                 urllib.urlretrieve(resource_url, control_file)
