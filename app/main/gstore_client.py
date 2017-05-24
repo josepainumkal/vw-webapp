@@ -256,7 +256,7 @@ class VWClient:
                                        verify=False)
                 
                 if result.status_code != 200:
-                    app.logger.error(r.content)
+                    app.logger.error(result.content)
 
                 logging.debug(result.content)
 
