@@ -3,8 +3,8 @@
 
 app/main/views.py
 
-Author: Matthew Turner
-Date: 20 January 2016
+Author: Jose Painumkal
+Date: 23 May 2017
 """
 import json
 import os
