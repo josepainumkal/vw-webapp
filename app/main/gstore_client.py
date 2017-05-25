@@ -315,7 +315,7 @@ class VWClient:
         """
         if config_file is None:
             config_file = \
-                os.path.join(os.path.dirname(__file__), '../default.conf')
+                os.path.join(os.path.dirname(__file__), '../templates/default.conf')
 
         assert os.path.isfile(config_file), "Config file %s does not exist!" \
             % os.path.abspath(config_file)
@@ -349,7 +349,7 @@ class VWClient:
         if config_file:
             config = self._get_config(config_file)
         else:
-            config = self._get_config(os.path.join(os.path.dirname(__file__), 'default.conf'))
+            config = self._get_config(os.path.join(os.path.dirname(__file__), 'templates/default.conf'))
 
         input_basename = os.path.basename(input_file)
 
@@ -523,7 +523,7 @@ class VWClient:
 
         if not config:
             config = _get_config(
-                os.path.join(os.path.dirname(__file__), '../default.conf'))
+                os.path.join(os.path.dirname(__file__), '../templates/default.conf'))
 
         # handle missing required fields not provided in kwargs
         geoconf = config['Geo']
