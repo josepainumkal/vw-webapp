@@ -2,9 +2,12 @@ import random
 import string
 from functools import wraps
 
-from flask import render_template
+from flask import render_template,session, request, flash
 from flask import current_app as app
 from flask.ext.security import login_required
+from ..main.gstore_client import VWClient 
+import requests
+requests.packages.urllib3.disable_warnings()
 
 from . import modeling
 
@@ -48,3 +51,50 @@ def modelling_dashboard():
 
     return render_template('modeling/dashboard.html',
                            VWMODEL_SERVER_URL=app.config['MODEL_HOST'])
+
+
+
+@modeling.route('/search_gstore/', methods=['GET'])
+@login_required
+@set_api_token
+def search_gstore():
+    return render_template('modeling/search_gstore.html',
+                           VWMODEL_SERVER_URL=app.config['MODEL_HOST'])
+
+
+
+@modeling.route('/gstore/', methods=['GET'])
+@login_required
+@set_api_token
+def search_in_gstore():
+    gstore_url = app.config['GSTORE_HOST']
+    gstore_uname = app.config['GSTORE_USERNAME']
+    gstore_pwd = app.config['GSTORE_PASSWORD']
+
+    vwclient = VWClient(gstore_url, gstore_uname, gstore_pwd)
+    vwclient.authenticate()
+
+
+    kwargs = {}
+    if request.args.get('model_name'):
+        kwargs['model_name'] = request.args.get('model_name')
+    if request.args.get('model_set_taxonomy'):
+        kwargs['model_set_taxonomy'] = request.args.get('model_set_taxonomy')
+    if request.args.get('model_run_uuid'):
+        kwargs['model_run_uuid'] = request.args.get('model_run_uuid')
+    if request.args.get('externaluserid') :
+        kwargs['externaluserid'] = request.args.get('externaluserid')
+    if request.args.get('model_set') :
+        kwargs['model_set'] = request.args.get('model_set')
+    if request.args.get('taxonomy'):
+        kwargs['taxonomy'] = request.args.get('taxonomy')
+    if request.args.get('model_set_type') :
+        kwargs['model_set_type'] = request.args.get('model_set_type')
+    if request.args.get('service'):
+        kwargs['service'] = request.args.get('service')
+    if request.args.get('sort_order') :
+        kwargs['sort_order'] = request.args.get('sort_order')
+    search_results = vwclient.search_datasets(**kwargs)
+    # resp_dict = json.loads(search_results.content)
+       
+    return search_results

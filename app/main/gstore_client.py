@@ -67,21 +67,44 @@ class VWClient:
         self.search_url = self.host_url+"/apps/vwp/search/datasets.json"
 
 
-    def search_datasets(self, externaluserid=None, externalapp=None, model_run_uuid=None):
+    def search_datasets(self, **kwargs):
         payload={}
-        if externalapp is not None:
-            payload['externalapp'] = externalapp
-        if externaluserid is not None:
-            payload['externaluserid'] = externaluserid
-        if model_run_uuid is not None:
-            payload['model_run_uuid'] = model_run_uuid
+
+        if 'model_name' in kwargs:
+            payload['modelname'] = kwargs['model_name']
+        if 'model_set_taxonomy' in kwargs:
+            payload['model_set_taxonomy'] = kwargs['model_set_taxonomy']
+        if 'model_run_uuid' in kwargs:
+            payload['model_run_uuid'] = kwargs['model_run_uuid']
+        if 'externaluserid' in kwargs:
+            payload['externaluserid'] = kwargs['externaluserid']
+        if 'model_set' in kwargs:
+            payload['model_set'] = kwargs['model_set']
+        if 'taxonomy' in kwargs:
+            payload['taxonomy'] = kwargs['taxonomy']
+        if 'model_set_type' in kwargs:
+            payload['model_set_type'] = kwargs['model_set_type']
+        if 'service' in kwargs:
+            payload['service'] = kwargs['service'] 
+        if 'sort_order' in kwargs:
+            payload['dir'] = kwargs['sort_order']   
+        # if externalapp is not None:
+        #     payload['externalapp'] = externalapp
+        # if externaluserid is not None:
+        #     payload['externaluserid'] = externaluserid
+        # if model_run_uuid is not None:
+        #     payload['model_run_uuid'] = model_run_uuid
         
+        print "\n\n\n payload: ",payload
+
+
         result = self.session.get(self.search_url, params=payload, verify=False)
-        # result = json.loads(result.content)
+
+        print result
 
 
         result = json.dumps(json.loads(result.content))
-        print result
+        return result
 
     
 
@@ -97,6 +120,18 @@ class VWClient:
 
     def tie_account(self, application_name):
         result = None
+
+
+
+
+
+
+
+
+
+
+
+
         try:    
             # application_name='virtualwatershed.org'
             payload = {'application':application_name}
@@ -194,7 +229,7 @@ class VWClient:
             app.logger.error('Unknown exception occurred on deleting model run')
             return False
 
-
+    
     def uploadModelData_swift(self, modelID_VWP, file_name):
 #       Use the Swift client from openstack to upload data.
 #       (http://docs.openstack.org/cli-reference/content/swiftclient_commands.html)
@@ -280,7 +315,7 @@ class VWClient:
         """
         if config_file is None:
             config_file = \
-                os.path.join(os.path.dirname(__file__), '../templates/default.conf')
+                os.path.join(os.path.dirname(__file__), '../default.conf')
 
         assert os.path.isfile(config_file), "Config file %s does not exist!" \
             % os.path.abspath(config_file)
@@ -314,7 +349,7 @@ class VWClient:
         if config_file:
             config = self._get_config(config_file)
         else:
-            config = self._get_config(os.path.join(os.path.dirname(__file__), 'templates/default.conf'))
+            config = self._get_config(os.path.join(os.path.dirname(__file__), 'default.conf'))
 
         input_basename = os.path.basename(input_file)
 
@@ -354,7 +389,7 @@ class VWClient:
             # kwargs['name'] = 'Incline_Creek_Gaging_Stations'
             kwargs['lastupdate'] = datetime.now().strftime ("%Y%m%d")
             kwargs['type'] = 'dataset'
-         ##########################################
+        ##########################################
 
         if file_ext == 'tif':
 
@@ -488,7 +523,7 @@ class VWClient:
 
         if not config:
             config = _get_config(
-                os.path.join(os.path.dirname(__file__), '../templates/default.conf'))
+                os.path.join(os.path.dirname(__file__), '../default.conf'))
 
         # handle missing required fields not provided in kwargs
         geoconf = config['Geo']
@@ -697,6 +732,7 @@ class VWClient:
                                                 'templates')))
 
         template = template_env.get_template('watershed_template.json')
+
 
         if 'wcs' in kwargs and kwargs['wcs']:
             wcs_str = 'wcs'
