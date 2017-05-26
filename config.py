@@ -25,8 +25,8 @@ class Config:
     UPLOAD_FOLDER = 'uploads'
     DOWNLOAD_FOLDER = 'downloads'
 
-    GSTORE_USERNAME = os.environ.get('GSTORE_USERNAME', 'vwppost@edac.unm.edu')
-    GSTORE_PASSWORD = os.environ.get('GSTORE_PASSWORD', 'Watershed@unr1990')
+    GSTORE_USERNAME = os.environ.get('GSTORE_USERNAME', 'josepainumkal@gmail.com')
+    GSTORE_PASSWORD = os.environ.get('GSTORE_PASSWORD', 'Rosh@2016')
     GSTORE_HOST = os.environ.get('GSTORE_HOST', 'https://vwp-dev.unm.edu/')
 
     SQLALCHEMY_DATABASE_URI = os.environ.get('SQLALCHEMY_DATABASE_URI', 'sqlite:///' + os.path.join(basedir, 'data-dev.sqlite'))
