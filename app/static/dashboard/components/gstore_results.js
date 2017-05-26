@@ -39,6 +39,21 @@ var GstoreResult = React.createClass({
               downloads.push(<a href={this.props.data.downloads[i].txt} key={j}>{outputfile_name}</a>)
               j=j+1;
           }
+          if(this.props.data.downloads[i].png != null){   
+              outputfile_name = this.props.data.downloads[i].png.split('/').pop();
+              downloads.push(<a href={this.props.data.downloads[i].png} key={j}>{outputfile_name}</a>)
+              j=j+1;
+          }
+          if(this.props.data.downloads[i].xml != null){   
+              outputfile_name = this.props.data.downloads[i].xml.split('/').pop();
+              downloads.push(<a href={this.props.data.downloads[i].xml} key={j}>{outputfile_name}</a>)
+              j=j+1;
+          }
+          if(this.props.data.downloads[i].pdf != null){   
+              outputfile_name = this.props.data.downloads[i].pdf.split('/').pop();
+              downloads.push(<a href={this.props.data.downloads[i].pdf} key={j}>{outputfile_name}</a>)
+              j=j+1;
+          }
         }
 
 
