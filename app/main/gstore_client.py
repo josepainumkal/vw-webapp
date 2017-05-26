@@ -15,7 +15,6 @@ import urllib
 import uuid
 
 from datetime import datetime, date, timedelta
-from flask import current_app as app
 from jinja2 import Environment, FileSystemLoader
 
 requests.packages.urllib3.disable_warnings()
@@ -88,12 +87,6 @@ class VWClient:
             payload['service'] = kwargs['service'] 
         if 'sort_order' in kwargs:
             payload['dir'] = kwargs['sort_order']   
-        # if externalapp is not None:
-        #     payload['externalapp'] = externalapp
-        # if externaluserid is not None:
-        #     payload['externaluserid'] = externaluserid
-        # if model_run_uuid is not None:
-        #     payload['model_run_uuid'] = model_run_uuid
         
         print "\n\n\n payload: ",payload
 
@@ -120,18 +113,6 @@ class VWClient:
 
     def tie_account(self, application_name):
         result = None
-
-
-
-
-
-
-
-
-
-
-
-
         try:    
             # application_name='virtualwatershed.org'
             payload = {'application':application_name}
@@ -209,7 +190,7 @@ class VWClient:
         if result.status_code == 200:
             return result.text    #result.text is the modelID in VWP platform
         else:
-            app.logger.error(result.text)
+            print result.text
  
 #  Deletes a model run in VWP | Returns True, if successfully deleted
     def deleteModelRun(self, model_run_uuid):
@@ -223,10 +204,10 @@ class VWClient:
         if result.status_code == 200:
             return True
         elif result.status_code == 422:
-            app.logger.error('The model run uuid is not located in the list of model runs')
+            print 'The model run uuid is not located in the list of model runs'
             return False
         else:
-            app.logger.error('Unknown exception occurred on deleting model run')
+            print 'Unknown exception occurred on deleting model run'
             return False
 
     
@@ -269,7 +250,7 @@ class VWClient:
         if r.status_code == 200:
             print "File has successfully uploaded to VWP!"
         else:
-            app.logger.error(r.content)
+            print r.content
             raise requests.HTTPError("Swift Upload Failed! Server response:\n" + r.text)
         return r
 
@@ -291,7 +272,9 @@ class VWClient:
                                        verify=False)
                 
                 if result.status_code != 200:
-                    app.logger.error(result.content)
+                    print "\n\nERROR---------------------------------------------insert_metadata---------------------"
+                    print result.content
+                   
 
                 logging.debug(result.content)
 
@@ -300,7 +283,7 @@ class VWClient:
 
             except requests.HTTPError:
                 num_tries += 1
-                app.logger.error(result.content)
+                print result.content
                 continue
 
         return result
