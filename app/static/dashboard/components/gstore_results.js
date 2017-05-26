@@ -22,7 +22,7 @@ var GstoreResult = React.createClass({
                       var propValue = this.props.data.downloads[i][propName];
                       // console.log("downloads: " +propValue);
                       outputfile_name = propValue.split('/').pop();
-                      downloads.push(<a href={propValue} key={j}>{outputfile_name}</a>);
+		      downloads.push(<div><a href={propValue} key={j}>{outputfile_name}</a></div>);
                       j=j+1;
                   }
               } 
