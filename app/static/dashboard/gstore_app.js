@@ -145,7 +145,7 @@ var ModelRunBox = React.createClass({
                                 </select>
                             </div>
                             <div className='col-md-2'>
-                                <label for="model_set_type" className="control-label">model_set_type </label> 
+                                <label for="model_set_type" className="control-label">Model Set Type </label> 
                                 <select id="model_set_type" className="form-control input-sm" value={this.state.model_set_type}  onChange={this.handleSetTypeChange}>
                                         <option value=""></option>
                                         <option value="raw">raw</option>
@@ -154,7 +154,7 @@ var ModelRunBox = React.createClass({
                                 </select>
                             </div>
                             <div className='col-md-2'>
-                                <label for="service" className="control-label">service </label> 
+                                <label for="service" className="control-label">Service </label> 
                                 <select id="service" className="form-control input-sm" value={this.state.service}  onChange={this.handleServiceChange}>
                                         <option value=""></option>
                                         <option value="wms">wms</option>
