@@ -29,6 +29,16 @@ var GstoreResult = React.createClass({
               downloads.push(<a href={this.props.data.downloads[i].zip} key={j}>{outputfile_name}</a>)
               j=j+1;
           }
+          if(this.props.data.downloads[i].control != null){   
+              outputfile_name = this.props.data.downloads[i].control.split('/').pop();
+              downloads.push(<a href={this.props.data.downloads[i].control} key={j}>{outputfile_name}</a>)
+              j=j+1;
+          }
+          if(this.props.data.downloads[i].txt != null){   
+              outputfile_name = this.props.data.downloads[i].txt.split('/').pop();
+              downloads.push(<a href={this.props.data.downloads[i].txt} key={j}>{outputfile_name}</a>)
+              j=j+1;
+          }
         }
 
 

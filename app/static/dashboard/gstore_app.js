@@ -92,12 +92,16 @@ var ModelRunBox = React.createClass({
                    Search in Gstore 
               </h3>
 
-               <ReactBootstrap.Panel header="Select atleast one below option to filter the results " className="modelrun"  bsStyle="danger">
+               <ReactBootstrap.Panel header="Select atleast one from below options to filter the results " className="modelrun"  bsStyle="danger">
                     <form id='search_queries'>
                         <div className='row'>
                             <div className='col-lg-2'>
                                   <label for="model_name" className="control-label">Model Name </label> 
                                   <input type="text" className="form-control input-sm" id="model_name" value={this.state.model_name} name="model_name" placeholder="prms / isnobal" onChange={this.handleModelNameChange}/>
+                            </div>
+                            <div className='col-lg-3'>
+                                  <label for="model_run_uuid" className="control-label">Model Run UUID </label> 
+                                  <input type="text" className="form-control input-sm" id="model_run_uuid"  value={this.state.model_run_uuid} name="model_run_uuid" placeholder="Gstore UUID" onChange={this.handleModelUUIDChange}/>
                             </div>
                             <div className='col-lg-2'>
                                   <label for="model_taxonomy" className="control-label">Model Set Taxonomy </label> 
@@ -109,11 +113,8 @@ var ModelRunBox = React.createClass({
                                 </select>
 
                             </div>
-                            <div className='col-lg-2'>
-                                  <label for="model_run_uuid" className="control-label">Model Run UUID </label> 
-                                  <input type="text" className="form-control input-sm" id="model_run_uuid"  value={this.state.model_run_uuid} name="model_run_uuid" placeholder="Gstore UUID" onChange={this.handleModelUUIDChange}/>
-                            </div>
-                            <div className='col-lg-2'>
+
+                            <div className='col-lg-3'>
                                   <label for="externaluserid" className="control-label">User UUID </label> 
                                   <input type="text" className="form-control input-sm" id="externaluserid" value={this.state.externaluserid} name="externaluserid" placeholder="User UUID" onChange={this.handleExternalUserIdChange}/>
                             </div>

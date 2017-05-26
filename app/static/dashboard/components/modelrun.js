@@ -228,8 +228,13 @@ var ModelRun = React.createClass({
               gstore_Pushed: this.state.gstore_Pushed
           }),
           success: function(data) {
-              this.setState({gstore_id: data.gstore_id});
-              this.setState({ gstore_Pushed: 'true', gpush_btn_text: 'Gstore-PUSH', gstorePushFiles: []});
+              var init_gstorePushFiles=[];
+              for(var i=0;i<this.props.data.resources.length;i++){
+                  //console.log('onebyone!',this.props.data.resources[i].id);
+                  init_gstorePushFiles.push(parseInt(this.props.data.resources[i].id));
+              }
+
+              this.setState({ gstore_id: data.gstore_id, gstore_Pushed: 'true', gpush_btn_text: 'Gstore-PUSH', gstorePushFiles: init_gstorePushFiles});
 
               // this.setState({ });
               // this.setState({ });
