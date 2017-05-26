@@ -15,58 +15,33 @@ var GstoreResult = React.createClass({
         var services = [];
         var downloads = [];
         var outputfile_name =null;
+    
+    		for (var i=0,j=0; i < this.props.data.downloads.length; i++) {
+              for(var propName in this.props.data.downloads[i]) {
+                  if(this.props.data.downloads[i].hasOwnProperty(propName)) {
+                      var propValue = this.props.data.downloads[i][propName];
+                      // console.log("downloads: " +propValue);
+                      outputfile_name = propValue.split('/').pop();
+                      downloads.push(<a href={propValue} key={j}>{outputfile_name}</a>);
+                      j=j+1;
+                  }
+              } 
+		    }
+        
+        for (var i=0,j=0; i < this.props.data.services.length; i++) {
+              for(var propName in this.props.data.services[i]) {
+                  if(this.props.data.services[i].hasOwnProperty(propName)) {
+                      var propValue = this.props.data.services[i][propName];
+                      // console.log("services: " +propValue);
+                      services.push(<div key={j}>{propValue}</div>);
+                      j=j+1;
+                  }
+              } 
+		    }
 
- 
-        for (var i=0,j=0; i < this.props.data.downloads.length; i++) {
-          if(this.props.data.downloads[i].nc != null){
-              outputfile_name = this.props.data.downloads[i].nc.split('/').pop();
-              // console.log("download: " + output);
-              downloads.push(<a href={this.props.data.downloads[i].nc} key={j}>{outputfile_name}</a>)
-              j=j+1;
-          }
-          if(this.props.data.downloads[i].zip != null){   
-              outputfile_name = this.props.data.downloads[i].zip.split('/').pop();
-              downloads.push(<a href={this.props.data.downloads[i].zip} key={j}>{outputfile_name}</a>)
-              j=j+1;
-          }
-          if(this.props.data.downloads[i].control != null){   
-              outputfile_name = this.props.data.downloads[i].control.split('/').pop();
-              downloads.push(<a href={this.props.data.downloads[i].control} key={j}>{outputfile_name}</a>)
-              j=j+1;
-          }
-          if(this.props.data.downloads[i].txt != null){   
-              outputfile_name = this.props.data.downloads[i].txt.split('/').pop();
-              downloads.push(<a href={this.props.data.downloads[i].txt} key={j}>{outputfile_name}</a>)
-              j=j+1;
-          }
-          if(this.props.data.downloads[i].png != null){   
-              outputfile_name = this.props.data.downloads[i].png.split('/').pop();
-              downloads.push(<a href={this.props.data.downloads[i].png} key={j}>{outputfile_name}</a>)
-              j=j+1;
-          }
-          if(this.props.data.downloads[i].xml != null){   
-              outputfile_name = this.props.data.downloads[i].xml.split('/').pop();
-              downloads.push(<a href={this.props.data.downloads[i].xml} key={j}>{outputfile_name}</a>)
-              j=j+1;
-          }
-          if(this.props.data.downloads[i].pdf != null){   
-              outputfile_name = this.props.data.downloads[i].pdf.split('/').pop();
-              downloads.push(<a href={this.props.data.downloads[i].pdf} key={j}>{outputfile_name}</a>)
-              j=j+1;
-          }
-        }
-
-
-        for (var i = 0,j=0; i < this.props.data.services.length; i++) {
-          services.push(<div className='service' key={j}>{this.props.data.services[i].wms} </div>); 
-            j=j+1;
-          services.push(<div className='service' key={j}>{this.props.data.services[i].wcs} </div>);
-           j=j+1;
-        }
-      
 
         return (
-
+                                    
           <div className="col-lg-12">
             <ReactBootstrap.Panel  className="modelrun"  bsStyle="primary">
               <div className="col-lg-12">
@@ -101,7 +76,6 @@ var GstoreResult = React.createClass({
                 </ReactBootstrap.Table>
               </div>
              
-
             </ReactBootstrap.Panel>
           </div>
         );
