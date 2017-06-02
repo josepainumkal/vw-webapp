@@ -64,6 +64,7 @@ class VWClient:
         self.verify_external_user_url = self.host_url+"showexternalusers?userid="
 
         self.search_url = self.host_url+"/apps/vwp/search/datasets.json"
+        self.upload_url = self.host_url+"/apps/vwp/data"
 
 
     def search_datasets(self, **kwargs):
@@ -209,6 +210,19 @@ class VWClient:
         else:
             print 'Unknown exception occurred on deleting model run'
             return False
+
+
+    def upload_data(self, model_id, path_to_file):
+        payload = {"modelid": model_id}
+        files = {'file': open(path_to_file, 'rb')}
+        result = self.session.post(self.upload_url, files=files, data=payload, auth=self.auth, verify=False)
+
+        if result.status_code == 200:
+            print result.text
+            return result
+        else:
+            print "FAILED UPLOAD! The error is: " + result.text
+            return result
 
     
     def uploadModelData_swift(self, modelID_VWP, file_name):

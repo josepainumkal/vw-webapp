@@ -69,6 +69,14 @@ def find_user_folder():
     return app_root
 
 
+def upload_model_data(vwclient, modeluuid_vwp, upload_file):
+    swift_upload = app.config['SWIFT_UPLOAD']
+    if swift_upload=='TRUE':
+        c = vwclient.uploadModelData_swift(modeluuid_vwp, upload_file) 
+    else:
+        c = vwclient.upload_data(modeluuid_vwp, upload_file)
+    return c
+
 def gstore_push(model_id,model_name, model_title, description, push_files):
     # 1) download the model files
     # 2) push the files to gstore
@@ -148,7 +156,7 @@ def gstore_push(model_id,model_name, model_title, description, push_files):
             if resource_type =='control':
                 urllib.urlretrieve(resource_url, control_file)
                 control_file = app.config['TEMP_CONTROL'].strip("/")
-                c = vwclient.uploadModelData_swift(modeluuid_vwp, control_file) 
+                c = upload_model_data(vwclient, modeluuid_vwp, control_file) 
                 if c.status_code !=200:
                     file_upload_filed.append('control')
                 else:
@@ -163,7 +171,7 @@ def gstore_push(model_id,model_name, model_title, description, push_files):
             elif resource_type =='data':
                 urllib.urlretrieve(resource_url, data_file)
                 data_file = app.config['TEMP_DATA'].strip("/")
-                d = vwclient.uploadModelData_swift(modeluuid_vwp, data_file) 
+                d = upload_model_data(vwclient, modeluuid_vwp, data_file) 
                 if d.status_code !=200:
                     file_upload_filed.append('data')
                 else:
@@ -177,7 +185,7 @@ def gstore_push(model_id,model_name, model_title, description, push_files):
             elif resource_type =='param':
                 urllib.urlretrieve(resource_url, param_file)
                 param_file = app.config['TEMP_PARAM'].strip("/")
-                p = vwclient.uploadModelData_swift(modeluuid_vwp, param_file)
+                p = upload_model_data(vwclient, modeluuid_vwp, param_file)
                 if p.status_code !=200:
                     file_upload_filed.append('param')
                 else:
@@ -191,7 +199,7 @@ def gstore_push(model_id,model_name, model_title, description, push_files):
             elif resource_type =='animation':
                 urllib.urlretrieve(resource_url, animation)
                 animation = app.config['TEMP_ANIMATION'].strip("/")
-                a = vwclient.uploadModelData_swift(modeluuid_vwp, animation) 
+                a = upload_model_data(vwclient, modeluuid_vwp, animation) 
                 if a.status_code !=200:
                     file_upload_filed.append('animation')
                 else:
@@ -205,7 +213,7 @@ def gstore_push(model_id,model_name, model_title, description, push_files):
             elif resource_type =='log':
                 urllib.urlretrieve(resource_url, log)
                 log = app.config['TEMP_LOG'].strip("/")
-                l = vwclient.uploadModelData_swift(modeluuid_vwp, log) 
+                l = upload_model_data(vwclient, modeluuid_vwp, log) 
                 if l.status_code !=200:
                     file_upload_filed.append('log')
                 else:
@@ -220,7 +228,7 @@ def gstore_push(model_id,model_name, model_title, description, push_files):
             elif resource_type =='output':
                 urllib.urlretrieve(resource_url, output_file)
                 output_file = app.config['TEMP_OUTPUT'].strip("/")
-                o = vwclient.uploadModelData_swift(modeluuid_vwp, output_file) 
+                o = upload_model_data(vwclient, modeluuid_vwp, output_file) 
                 if o.status_code !=200:
                     file_upload_filed.append('output')
                 else:
@@ -235,7 +243,7 @@ def gstore_push(model_id,model_name, model_title, description, push_files):
             elif resource_type =='animation_original':
                 urllib.urlretrieve(resource_url, animation_original)
                 animation_original = app.config['TEMP_ANIMATION_ORIGINAL'].strip("/")
-                a_org = vwclient.uploadModelData_swift(modeluuid_vwp, animation_original) 
+                a_org = upload_model_data(vwclient, modeluuid_vwp, animation_original) 
                 if a_org.status_code !=200:
                     file_upload_filed.append('animation_original')
                 else:
@@ -249,7 +257,7 @@ def gstore_push(model_id,model_name, model_title, description, push_files):
             elif resource_type =='statsvar_original':
                 urllib.urlretrieve(resource_url, statsvar_original)
                 statsvar_original = app.config['TEMP_STATSVAR_ORIGINAL'].strip("/")
-                statsvar_org = vwclient.uploadModelData_swift(modeluuid_vwp, statsvar_original) 
+                statsvar_org = upload_model_data(vwclient, modeluuid_vwp, statsvar_original) 
                 if statsvar_org.status_code !=200:
                     file_upload_filed.append('statsvar_original')
                 else:
@@ -263,7 +271,7 @@ def gstore_push(model_id,model_name, model_title, description, push_files):
             elif resource_type =='gsflow_log':
                 urllib.urlretrieve(resource_url, gsflow_log)
                 gsflow_log = app.config['TEMP_GSFLOW_LOG'].strip("/")
-                g = vwclient.uploadModelData_swift(modeluuid_vwp, gsflow_log) 
+                g = upload_model_data(vwclient, modeluuid_vwp, gsflow_log) 
                 if g.status_code !=200:
                     file_upload_filed.append('gsflow_log')
                 else:
@@ -277,7 +285,7 @@ def gstore_push(model_id,model_name, model_title, description, push_files):
             elif resource_type =='statsvar':
                 urllib.urlretrieve(resource_url, statsvar)
                 statsvar = app.config['TEMP_STATSVAR'].strip("/")
-                s = vwclient.uploadModelData_swift(modeluuid_vwp, statsvar) 
+                s = upload_model_data(vwclient, modeluuid_vwp, statsvar) 
                 if s.status_code !=200:
                     file_upload_filed.append('statsvar')
                 else:
@@ -293,6 +301,7 @@ def gstore_push(model_id,model_name, model_title, description, push_files):
 
     resp['failed_file_upload'] = file_upload_filed
     resp['file_metadataUpload_failed'] = file_metadataUpload_failed
+    resp['SWIFT_UPLOAD'] = app.config['SWIFT_UPLOAD']
 
     return resp
 

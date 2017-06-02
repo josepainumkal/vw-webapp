@@ -41,7 +41,7 @@ class Config:
    
     TEMP_CONTROL = os.environ.get('TEMP_CONTROL', '/control')
     TEMP_DATA = os.environ.get('TEMP_DATA', '/data')
-    TEMP_PARAM = os.environ.get('TEMP_PARAM', '/control')
+    TEMP_PARAM = os.environ.get('TEMP_PARAM', '/param')
     TEMP_LOG = os.environ.get('TEMP_LOG', '/log')
     TEMP_OUTPUT = os.environ.get('TEMP_OUTPUT', '/output')
     TEMP_ANIMATION = os.environ.get('TEMP_ANIMATION', '/animation')
@@ -52,7 +52,10 @@ class Config:
 
     # Configure logging
     LOGGING_LOCATION = 'app/static/vw-webapp.log'
-    
+ 
+    # GSTORE_UPLOAD
+    SWIFT_UPLOAD = os.environ.get('SWIFT_UPLOAD', 'FALSE')
+
     SESSION_COOKIE_NAME = os.environ.get(
         'VWWEBAPP_SESSION_COOKIE_NAME','vwsession')
     SESSION_COOKIE_DOMAIN = os.environ.get(
